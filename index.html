@@ -3,343 +3,530 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Voces con Propósito - Evento</title>
+    <title>Voces con Propósito - Arequipa 2026</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Playfair+Display:ital,wght@0,600;1,400&display=swap');
 
-        /* --- RESETEO BÁSICO --- */
+        /* --- VARIABLES DE COLOR (Versión Luminosa / Arequipa) --- */
+        :root {
+            --azul: #2d3983;
+            --rojo: #b90730;
+            --negro: #060606;
+            --blanco: #fdfdfc; /* Blanco roto más cálido */
+            --gris-texto: #4a4a4a;
+            --gris-claro: #e5e5e5;
+            --papel: #f4f1ea; /* Color base del papel viejo/crema */
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body, html {
-            width: 100%;
+        body {
             font-family: 'Montserrat', sans-serif;
-            background-color: #0f172a; /* Fondo general oscuro */
-            color: white;
-            scroll-behavior: smooth; /* Desplazamiento suave al bajar */
+            background-color: var(--papel);
+            color: var(--negro);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            position: relative;
         }
 
-        /* --- SECCIÓN 1: HERO PARALLAX (Pantalla Completa) --- */
-        .hero-section {
-            position: relative;
-            width: 100%;
-            height: 100vh; /* Ocupa exactamente el 100% del alto de la pantalla del celular */
+        /* --- TEXTURA DE PAPEL ARRUGADO (Fondo global) --- */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            /* Filtro SVG de ruido/textura de papel integrado */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.05; /* Muy sutil para que no estorbe la lectura */
+            pointer-events: none;
+            z-index: 9999; /* Siempre por encima para dar textura a todo */
+        }
+
+        /* --- FONDOS PARALLAX EN MOVIMIENTO --- */
+        .parallax-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .forma {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15; /* Más transparentes en fondo blanco */
+            transition: transform 0.1s linear;
+            mix-blend-mode: multiply; /* Se mezclan con el papel */
+        }
+        .forma-azul { background: var(--azul); width: 400px; height: 400px; top: -100px; left: -100px; }
+        .forma-roja { background: var(--rojo); width: 350px; height: 350px; top: 50%; right: -100px; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+        .hero h1 {
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 900;
+            line-height: 0.95;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            color: var(--azul);
+            margin-bottom: 15px;
+        }
+        .hero h1 span { color: var(--rojo); }
+        .hero h2 {
+            font-family: 'Playfair Display', serif; /* Toque editorial/político */
+            font-size: clamp(1.2rem, 4vw, 2.5rem);
+            font-style: italic;
+            color: var(--gris-texto);
+            margin-bottom: 30px;
+        }
+        .fecha-lugar {
+            background: var(--negro);
+            color: var(--blanco);
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
-        .capa {
-            position: absolute;
-            transition: transform 0.15s ease-out; 
+        /* --- SECCIÓN CANDIDATOS (Tarjetas Detalladas con Parallax) --- */
+        .candidatos-section {
+            padding: 80px 20px;
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 60px;
+            color: var(--azul);
+            text-transform: uppercase;
+        }
+
+        .candidatos-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+
+        .tarjeta-candidato {
+            background: rgba(253, 253, 252, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+
+        /* Contenedor de la imagen con máscara para el efecto Parallax interno */
+        .imagen-candidato-wrapper {
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            position: relative;
+            background: var(--gris-claro);
+        }
+
+        .imagen-candidato-wrapper img {
+            width: 100%;
+            height: 130%; /* Más alto que el contenedor para permitir el movimiento */
+            object-fit: cover;
+            object-position: top;
+            /* La clase parallax-img la moverá desde JS */
             will-change: transform; 
         }
 
-        .esfera {
-            border-radius: 50%;
-            filter: blur(35px);
-            opacity: 0.6;
-            animation: palpitar 6s infinite alternate ease-in-out;
-        }
-
-        .esfera-1 { width: 200px; height: 200px; background: #3b82f6; top: 10%; left: -10%; }
-        .esfera-2 { width: 250px; height: 250px; background: #8b5cf6; bottom: 5%; right: -10%; }
-
-        @keyframes palpitar {
-            0% { transform: scale(1); opacity: 0.4; }
-            100% { transform: scale(1.3); opacity: 0.8; }
-        }
-
-        .contenido-texto {
-            text-align: center;
-            z-index: 10; 
-            pointer-events: none; 
-            padding: 0 15px;
-            width: 100%;
-        }
-
-        .titulo {
-            font-weight: 900;
-            letter-spacing: -1px;
-            line-height: 1.1;
-            margin-bottom: 12px;
-            text-shadow: 0 8px 20px rgba(0,0,0,0.6);
-            font-size: 2.5rem; /* Base para móviles */
-        }
-
-        .titulo span {
-            background: linear-gradient(to right, #60a5fa, #c084fc); 
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .subtitulo {
-            font-weight: 400;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #cbd5e1;
-            font-size: 0.85rem; 
-        }
-
-        /* Indicador para hacer scroll hacia abajo */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 20;
-            animation: bounce 2s infinite;
-            opacity: 0.7;
-        }
-        
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
-            40% { transform: translateY(-15px) translateX(-50%); }
-            60% { transform: translateY(-7px) translateX(-50%); }
-        }
-
-        /* --- SECCIÓN 2: CRONOGRAMA (Diseño de Cristal) --- */
-        .schedule-section {
-            padding: 60px 20px;
-            background-color: #0f172a; /* Mismo fondo para continuidad */
-            min-height: 100vh;
-            position: relative;
-            z-index: 5;
-        }
-
-        .schedule-title {
-            text-align: center;
-            font-size: 2rem;
-            margin-bottom: 40px;
-            color: #e2e8f0;
-        }
-
-        .cronograma-container {
-            max-width: 600px;
-            margin: auto;
-        }
-
-        .evento {
-            /* Efecto Glassmorphism (Cristal esmerilado) */
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            margin-bottom: 15px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .evento-cabecera {
-            padding: 20px;
-            cursor: pointer;
+        .info-candidato {
+            padding: 30px;
             display: flex;
-            align-items: center;
-            border-left: 4px solid transparent;
-            transition: all 0.3s ease;
+            flex-direction: column;
+            justify-content: center;
         }
 
-        /* Colores dinámicos para el borde de cada evento */
-        .evento:nth-child(1) .evento-cabecera { border-left-color: #3b82f6; }
-        .evento:nth-child(2) .evento-cabecera { border-left-color: #8b5cf6; }
-        .evento:nth-child(3) .evento-cabecera { border-left-color: #10b981; }
-
-        .hora {
+        .partido-tag {
+            font-size: 0.8rem;
             font-weight: 700;
-            color: #94a3b8;
-            font-size: 14px;
-            min-width: 75px; /* Evita que los textos se empujen */
-        }
-
-        .tema {
-            font-size: 16px;
-            font-weight: 600;
-            color: #ffffff;
-            flex-grow: 1;
-            margin-left: 10px;
-        }
-
-        .icono {
-            font-size: 16px;
-            color: #94a3b8;
-            transition: transform 0.3s ease;
-        }
-
-        .evento.activo .icono {
-            transform: rotate(180deg);
-        }
-
-        .evento-detalle {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-out, padding 0.4s ease;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 0 20px;
-        }
-
-        .evento.activo .evento-detalle {
-            max-height: 200px; 
-            padding: 15px 20px 20px 20px;
-        }
-
-        .evento-detalle p {
-            color: #cbd5e1;
-            font-size: 14px;
-            line-height: 1.5;
+            color: var(--rojo);
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 10px;
         }
 
-        .ponente {
-            color: #60a5fa;
-            font-size: 13px;
-            font-weight: 600;
+        .info-candidato h3 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--azul);
+            margin-bottom: 15px;
+            line-height: 1.1;
         }
 
-        /* --- RESPONSIVIDAD (Media Queries) --- */
-        @media (min-width: 400px) {
-            .titulo { font-size: 3rem; }
-            .subtitulo { font-size: 1rem; letter-spacing: 3px; }
-            .esfera-1 { width: 250px; height: 250px; }
+        .info-candidato p {
+            font-size: 0.95rem;
+            color: var(--gris-texto);
+            line-height: 1.6;
         }
-        @media (min-width: 700px) {
-            .titulo { font-size: 4rem; }
-            .subtitulo { font-size: 1.2rem; }
-            .hora { font-size: 16px; min-width: 90px; }
-            .tema { font-size: 18px; }
+
+        /* --- CRONOGRAMA VERTICAL MINUTO A MINUTO --- */
+        .timeline-section {
+            padding: 60px 20px 100px;
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .timeline { position: relative; }
+
+        /* Línea central */
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px; /* Alineado a la izquierda en móviles */
+            top: 0; height: 100%; width: 4px;
+            background: var(--gris-claro);
+            border-radius: 2px;
+        }
+
+        .timeline-block {
+            position: relative;
+            margin-bottom: 50px;
+            padding-left: 60px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .timeline-block.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 10px; /* Centrado sobre la línea */
+            top: 5px; width: 24px; height: 24px;
+            border-radius: 50%;
+            background: var(--blanco);
+            border: 5px solid var(--azul);
+            box-shadow: 0 0 0 5px rgba(45, 57, 131, 0.1);
+        }
+
+        .timeline-block:nth-child(even) .timeline-dot { border-color: var(--rojo); box-shadow: 0 0 0 5px rgba(185, 7, 48, 0.1); }
+
+        .timeline-content {
+            background: var(--blanco);
+            border: 1px solid rgba(0,0,0,0.05);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            position: relative;
+        }
+
+        /* Bloque principal del tiempo */
+        .time-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--papel);
+            padding-bottom: 15px;
+        }
+
+        .time-main {
+            color: var(--rojo);
+            font-weight: 900;
+            font-size: 1.5rem;
+            letter-spacing: -1px;
+        }
+        .timeline-block:nth-child(odd) .time-main { color: var(--azul); }
+
+        .block-title {
+            color: var(--negro);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        /* SUB-EVENTOS (El detalle minuto a minuto) */
+        .sub-timeline {
+            list-style: none;
+            margin-top: 15px;
+            position: relative;
+        }
+
+        .sub-event {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            color: var(--gris-texto);
+            line-height: 1.5;
+        }
+
+        /* Línea de conexión para los subeventos */
+        .sub-event::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 8px;
+            width: 8px; height: 8px;
+            background: var(--gris-claro);
+            border-radius: 50%;
+        }
+        .sub-event::after {
+            content: '';
+            position: absolute;
+            left: 3px; top: 18px;
+            width: 2px; height: calc(100% + 5px);
+            background: var(--gris-claro);
+        }
+        .sub-event:last-child::after { display: none; }
+
+        .sub-time {
+            font-weight: 700;
+            color: var(--negro);
+            display: inline-block;
+            margin-right: 5px;
+            background: var(--papel);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        .duracion {
+            font-size: 0.75rem;
+            color: #888;
+            font-style: italic;
+            margin-left: 5px;
+        }
+
+        /* --- RESPONSIVIDAD TABLET / PC --- */
+        @media (min-width: 768px) {
+            .candidatos-grid { grid-template-columns: repeat(2, 1fr); }
+            
+            .timeline::before { left: 50%; transform: translateX(-50%); }
+            .timeline-block { width: 50%; padding-left: 0; padding-right: 50px; }
+            .timeline-block:nth-child(even) { margin-left: 50%; padding-right: 0; padding-left: 50px; }
+            .timeline-dot { left: auto; right: -12px; }
+            .timeline-block:nth-child(even) .timeline-dot { left: -12px; right: auto; }
         }
 
     </style>
 </head>
 <body>
 
-    <!-- SECCIÓN 1: HERO PARALLAX -->
-    <section class="hero-section" id="escena">
-        <!-- Capas del fondo -->
-        <div class="capa esfera esfera-1" data-speed="-2"></div>
-        <div class="capa esfera esfera-2" data-speed="3"></div>
+    <!-- Fondos Parallax -->
+    <div class="parallax-bg">
+        <div class="forma forma-azul" data-speed="0.1"></div>
+        <div class="forma forma-roja" data-speed="-0.15"></div>
+    </div>
 
-        <!-- Capa del texto -->
-        <div class="capa contenido-texto" data-speed="6">
-            <h1 class="titulo">Voces con<br><span>Propósito</span></h1>
-            <p class="subtitulo">Escucha, conecta, transforma</p>
-        </div>
-
-        <!-- Flechita animada indicando que hay más abajo -->
-        <div class="scroll-indicator">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-        </div>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <h1 class="capa-parallax" data-speed="-0.3">Voces con<br><span>Propósito</span></h1>
+        <h2 class="capa-parallax" data-speed="-0.1">Transparencia y Debate</h2>
+        <div class="fecha-lugar capa-parallax" data-speed="0.1">Arequipa, Marzo 2026</div>
     </section>
 
-    <!-- SECCIÓN 2: CRONOGRAMA -->
-    <section class="schedule-section">
-        <h2 class="schedule-title">Cronograma de Hoy</h2>
+    <!-- SECCIÓN CANDIDATOS (Tarjetas Detalladas) -->
+    <section class="candidatos-section">
+        <h2 class="section-title">Los Candidatos</h2>
         
-        <div class="cronograma-container">
+        <div class="candidatos-grid">
+            <!-- Candidato 1 -->
+            <div class="tarjeta-candidato capa-parallax" data-speed="0.05">
+                <div class="imagen-candidato-wrapper">
+                    <!-- Parallax interno: la imagen se mueve independientemente de la tarjeta -->
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800" alt="Candidato 1" class="parallax-img" data-img-speed="-0.15">
+                </div>
+                <div class="info-candidato">
+                    <span class="partido-tag">Partido Innovación Arequipa</span>
+                    <h3>Dr. Alejandro Vargas</h3>
+                    <p>Aquí irá la descripción detallada del candidato. Un resumen de su perfil profesional, su experiencia previa en la gestión pública y los pilares principales de su propuesta para la región. Este texto de relleno servirá para maquetar el espacio hasta tener los datos oficiales.</p>
+                </div>
+            </div>
+
+            <!-- Candidato 2 -->
+            <div class="tarjeta-candidato capa-parallax" data-speed="-0.05">
+                <div class="imagen-candidato-wrapper">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800" alt="Candidata 2" class="parallax-img" data-img-speed="-0.15">
+                </div>
+                <div class="info-candidato">
+                    <span class="partido-tag">Alianza por el Progreso Sur</span>
+                    <h3>Mg. Claudia Mendoza</h3>
+                    <p>Espacio reservado para el perfil de la candidata. Detalles sobre su carrera, logros destacados y enfoque principal para el debate (Economía, Seguridad o Educación). Una vez proporcionados los textos reales, la tarjeta se adaptará perfectamente al contenido.</p>
+                </div>
+            </div>
             
-            <!-- Evento 1 -->
-            <div class="evento">
-                <div class="evento-cabecera" onclick="toggleDetalle(this)">
-                    <span class="hora">09:00 AM</span>
-                    <span class="tema">Inauguración y Bienvenida</span>
-                    <span class="icono">▼</span>
-                </div>
-                <div class="evento-detalle">
-                    <p>Palabras de apertura a cargo del equipo directivo. Presentación de los objetivos del día y dinámica para romper el hielo.</p>
-                    <span class="ponente">🎤 Equipo Voces con Propósito</span>
+            <!-- Puedes copiar y pegar el bloque <div class="tarjeta-candidato"> para añadir a los 8 restantes -->
+        </div>
+    </section>
+
+    <!-- CRONOGRAMA MINUTO A MINUTO -->
+    <section class="timeline-section">
+        <h2 class="section-title">El Debate a Detalle</h2>
+        
+        <div class="timeline">
+            
+            <!-- Bloque 1: Apertura (DESGLOSADO) -->
+            <div class="timeline-block fade-in-scroll">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="time-header">
+                        <span class="time-main">5:00 PM</span>
+                        <h3 class="block-title">Apertura y Presentación</h3>
+                    </div>
+                    
+                    <!-- Sub-eventos extraídos del PDF -->
+                    <ul class="sub-timeline">
+                        <li class="sub-event">
+                            <span class="sub-time">5:00 - 5:02</span>
+                            <span class="duracion">(2 min)</span><br>
+                            Bienvenida y presentación del evento, propósito y compromiso de neutralidad (A cargo de Moderador 1).
+                        </li>
+                        <li class="sub-event">
+                            <span class="sub-time">5:02 - 5:05</span>
+                            <span class="duracion">(3 min)</span><br>
+                            Presentación de los moderadores. Explicación breve del formato y dinámica de las rondas (A cargo de Moderador 2).
+                        </li>
+                        <li class="sub-event">
+                            <span class="sub-time">5:05 - 5:07</span>
+                            <span class="duracion">(2 min)</span><br>
+                            Lectura de reglas esenciales (tiempos, prohibiciones). Sorteo y anuncio del orden de participación.
+                        </li>
+                        <li class="sub-event">
+                            <span class="sub-time">5:10 - 5:25</span>
+                            <span class="duracion">(15 min)</span><br>
+                            <strong>Presentación individual:</strong> Cada uno de los 10 candidatos tiene exactamente 1.5 minutos para presentarse ante el público.
+                        </li>
+                    </ul>
                 </div>
             </div>
 
-            <!-- Evento 2 -->
-            <div class="evento">
-                <div class="evento-cabecera" onclick="toggleDetalle(this)">
-                    <span class="hora">10:30 AM</span>
-                    <span class="tema">Charla: El poder de tu voz</span>
-                    <span class="icono">▼</span>
-                </div>
-                <div class="evento-detalle">
-                    <p>Taller interactivo sobre cómo comunicar ideas de impacto y perder el miedo escénico frente a grandes audiencias.</p>
-                    <span class="ponente">🗣️ Lic. Andrea Martínez</span>
+            <!-- Bloque 2: Justicia -->
+            <div class="timeline-block fade-in-scroll">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="time-header">
+                        <span class="time-main">5:25 PM</span>
+                        <h3 class="block-title">Bloque 1: Justicia y Seguridad</h3>
+                    </div>
+                    <ul class="sub-timeline">
+                        <li class="sub-event">
+                            <span class="sub-time">5:25 - 5:35</span>
+                            <span class="duracion">(10 min)</span><br>
+                            Ronda de posturas: Respuestas de 1 minuto por candidato sobre estrategias de seguridad ciudadana.
+                        </li>
+                        <li class="sub-event">
+                            <span class="sub-time">5:35 - 5:55</span>
+                            <span class="duracion">(20 min)</span><br>
+                            Ronda de interpelación y réplicas. Los candidatos solicitan la palabra para debatir propuestas específicas.
+                        </li>
+                    </ul>
                 </div>
             </div>
 
-            <!-- Evento 3 -->
-            <div class="evento">
-                <div class="evento-cabecera" onclick="toggleDetalle(this)">
-                    <span class="hora">12:00 PM</span>
-                    <span class="tema">Networking y Cierre</span>
-                    <span class="icono">▼</span>
-                </div>
-                <div class="evento-detalle">
-                    <p>Espacio libre para conectar con otros participantes, compartir ideas y formar grupos de trabajo para futuros proyectos.</p>
-                    <span class="ponente">🤝 Actividad Libre</span>
+            <!-- Bloque 3: Cierre -->
+            <div class="timeline-block fade-in-scroll">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="time-header">
+                        <span class="time-main">7:25 PM</span>
+                        <h3 class="block-title">Cierre y Veredicto Final</h3>
+                    </div>
+                    <ul class="sub-timeline">
+                        <li class="sub-event">
+                            <span class="sub-time">7:25 - 7:42</span>
+                            <span class="duracion">(17 min)</span><br>
+                            Mensaje final: 1.5 minutos para cada candidato para emitir su reflexión de cierre.
+                        </li>
+                        <li class="sub-event">
+                            <span class="sub-time">7:42 - 7:45</span>
+                            <span class="duracion">(3 min)</span><br>
+                            Agradecimiento público y <strong>Foto Oficial</strong> en el escenario con candidatos y equipo organizador.
+                        </li>
+                    </ul>
                 </div>
             </div>
 
         </div>
     </section>
 
-    <!-- SCRIPTS PARA INTERACTIVIDAD -->
+    <!-- SCRIPTS -->
     <script>
-        // --- 1. SCRIPT DEL PARALLAX (Solo funciona en la sección Hero) ---
-        document.addEventListener("DOMContentLoaded", function() {
-            const escena = document.getElementById('escena');
-            const capas = document.querySelectorAll('.capa');
-
-            function moverCapas(clientX, clientY) {
-                let x = clientX - window.innerWidth / 2;
-                let y = clientY - window.innerHeight / 2;
-
-                capas.forEach(function(capa) {
-                    let velocidad = capa.getAttribute('data-speed');
-                    let xPos = (x * velocidad) / 120;
-                    let yPos = (y * velocidad) / 120;
-                    capa.style.transform = `translate(${xPos}px, ${yPos}px)`;
-                });
-            }
-
-            // Para PC
-            escena.addEventListener('mousemove', function(e) {
-                moverCapas(e.clientX, e.clientY);
-            });
-
-            // Para Celulares
-            escena.addEventListener('touchmove', function(e) {
-                let toque = e.touches[0];
-                moverCapas(toque.clientX, toque.clientY);
-            }, {passive: true});
-
-            function resetearPosicion() {
-                capas.forEach(function(capa) {
-                    capa.style.transform = `translate(0px, 0px)`;
-                });
-            }
-
-            escena.addEventListener('mouseleave', resetearPosicion);
-            escena.addEventListener('touchend', resetearPosicion);
-        });
-
-        // --- 2. SCRIPT DEL CRONOGRAMA ACORDEÓN ---
-        function toggleDetalle(elemento) {
-            let evento = elemento.parentElement;
+        document.addEventListener("DOMContentLoaded", () => {
             
-            // Si quieres que al abrir uno se cierren los demás, descomenta esto:
-            /*
-            let activos = document.querySelectorAll('.evento.activo');
-            activos.forEach(el => {
-                if(el !== evento) el.classList.remove('activo');
-            });
-            */
+            /* --- 1. PARALLAX GENERAL AL HACER SCROLL --- */
+            const parallaxElements = document.querySelectorAll('.capa-parallax');
+            /* Imágenes con efecto parallax interno (se mueven dentro de su contenedor) */
+            const parallaxImages = document.querySelectorAll('.parallax-img');
 
-            evento.classList.toggle('activo');
-        }
+            window.addEventListener('scroll', () => {
+                let scrollY = window.scrollY;
+
+                // Mover capas generales
+                parallaxElements.forEach(el => {
+                    let speed = el.getAttribute('data-speed');
+                    let yPos = scrollY * speed;
+                    el.style.transform = `translateY(${yPos}px)`;
+                });
+
+                // Mover imágenes dentro de las tarjetas de los candidatos
+                parallaxImages.forEach(img => {
+                    // Calculamos la posición de la imagen respecto a la pantalla
+                    let rect = img.parentElement.getBoundingClientRect();
+                    // Solo aplicar parallax si el contenedor está visible en pantalla
+                    if(rect.top < window.innerHeight && rect.bottom > 0) {
+                        let speed = img.getAttribute('data-img-speed');
+                        // El movimiento depende de qué tan lejos esté el elemento del centro de la pantalla
+                        let distanceToCenter = rect.top - (window.innerHeight / 2);
+                        let yPos = distanceToCenter * speed;
+                        img.style.transform = `translateY(${yPos}px)`;
+                    }
+                });
+            });
+
+            /* --- 2. ANIMACIÓN DE APARICIÓN DEL CRONOGRAMA --- */
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15 
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            const timeBlocks = document.querySelectorAll('.fade-in-scroll');
+            timeBlocks.forEach(block => {
+                observer.observe(block);
+            });
+
+        });
     </script>
 </body>
 </html>
